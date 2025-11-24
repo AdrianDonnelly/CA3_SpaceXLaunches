@@ -1,16 +1,74 @@
 ﻿@inherits LayoutComponentBase
+@* Required *@
+<MudThemeProvider />
+<MudPopoverProvider />
+
+@* Needed for dialogs *@
+<MudDialogProvider />
+
+@* Needed for snackbars *@
+<MudSnackbarProvider />
+
 <div class="page">
-    <div class="sidebar">
-        <NavMenu/>
-    </div>
+    <MudThemeProvider />
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+    <MudLayout>
+        <MudAppBar Elevation="1">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+            <MudSpacer />
+            <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+        </MudAppBar>
+        <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
+            <MudDrawerHeader>
+                <MudText Typo="Typo.h5" Class="mt-1">Application</MudText>
+            </MudDrawerHeader>
+            @*NavMenu*@
+        </MudDrawer>
+        <MudMainContent>
+            
+            <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
+                <MudGrid>
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;"></MudPaper>
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;"></MudPaper>
+                    </MudItem>
+                    <MudItem xs="12" sm="12" md="4">
+                        <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;"></MudPaper>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;"></MudPaper>
+                            </MudItem>
+                            <MudItem xs="12">
+                                <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;"></MudPaper>
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudPaper Elevation="2" Class="pa-4" Style="height: 100%"></MudPaper>
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;"></MudPaper>
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;"></MudPaper>
+                    </MudItem>
+                    <MudItem xs="12" sm="12" md="4">
+                        <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;"></MudPaper>
+                    </MudItem>
+                </MudGrid>
+            </MudContainer>
+        </MudMainContent>
+    </MudLayout>
+    @code {
+        bool _drawerOpen = true;
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+        void DrawerToggle()
+        {
+            _drawerOpen = !_drawerOpen;
+        }
+    }
 </div>
