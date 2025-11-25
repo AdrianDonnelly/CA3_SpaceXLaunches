@@ -1,50 +1,69 @@
 ﻿@inherits LayoutComponentBase
-<MudThemeProvider/>
+@using MudBlazor
+
+<MudThemeProvider @bind-IsDarkMode="@_isDarkMode"/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
 <MudLayout>
 
-    <MudAppBar Elevation="1">
+    <!-- NAV BAR -->
+    <MudAppBar Elevation="1" Color="Color.Primary">
+        <!-- Drawer Toggle -->
         <MudIconButton Icon="@Icons.Material.Filled.Menu"
                        Color="Color.Inherit"
                        Edge="Edge.Start"
-                       OnClick="@((e) => DrawerToggle())" />
+                       OnClick="@((e) => DrawerToggle())"/>
 
-        <MudSpacer />
-        <MudLink Href="/" Class="cursor-pointer">
-            <MudText Typo="Typo.h5" Class="text-white" >Exo-Planet Explorer</MudText>
+        <MudSpacer/>
+
+        <!-- Title -->
+        <MudLink Href="/" Class="cursor-pointer" Style="text-decoration:none;">
+            <MudText Typo="Typo.h5" Color="Color.Inherit">
+                Exo-Planet Explorer
+            </MudText>
         </MudLink>
 
-        <MudSpacer />
+        <MudSpacer/>
 
+        <!-- Dark Mode Toggle -->
+        <MudSwitch @bind-Value="_isDarkMode" Color="Color.Primary" Class="ma-4" T="bool"/>
+
+
+        <!-- More Menu -->
         <MudIconButton Icon="@Icons.Material.Filled.MoreVert"
                        Color="Color.Inherit"
-                       Edge="Edge.End" />
+                       Edge="Edge.End"/>
     </MudAppBar>
 
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
+    <!-- SIDE DRAWER -->
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="2" Color="Color.Primary" Variant="DrawerVariant.Temporary">
         <MudDrawerHeader>
-            <MudText Typo="Typo.h5">Applications</MudText>
+            <MudText Typo="Typo.h5" Color="Color.Inherit">Navigation</MudText>
         </MudDrawerHeader>
+
         <MudDrawerContainer>
-            <MudNavLink Href="/" Match="NavLinkMatch.All">
+            <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
                 Home
             </MudNavLink>
-            <MudNavLink Href="/counter" Match="NavLinkMatch.All">
+
+            <MudNavLink Href="/counter" Icon="@Icons.Material.Filled.Calculate">
                 Counter
             </MudNavLink>
-
         </MudDrawerContainer>
     </MudDrawer>
 
+    <!-- PAGE BODY -->
     <MudMainContent>
-        @Body   
+        @Body
     </MudMainContent>
 
 </MudLayout>
 
+
 @code {
-    bool _drawerOpen = true;
-    void DrawerToggle() => _drawerOpen = !_drawerOpen;
+    private bool _drawerOpen = true;
+    private bool _isDarkMode = false;
+
+    private void DrawerToggle() => _drawerOpen = !_drawerOpen;
 }
