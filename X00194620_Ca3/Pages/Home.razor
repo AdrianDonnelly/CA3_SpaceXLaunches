@@ -1,39 +1,50 @@
 ﻿@page "/"
+@using System.Text.Json
+@using X00194620_Ca3.Services
+@inject ApiService ApiService
+@inject NavigationManager Navigation
 
+
+@if (loading)
+{
+    <p>Loading...</p>
+}
+else if (results is not null)
+{
+    <ul>
+        @foreach (var obj in results)
+        {
+            <li>@obj.Name (@obj.ObjectType)</li>
+        }
+    </ul>
+}
+@code {
+    private string searchQuery = "";
+    private List<ApiService.ArcObject>? results;
+    private bool loading = false;
+
+    private async Task Search()
+    {
+        loading = true;
+        results = await ApiService.SearchObjects(searchQuery);
+        loading = false;
+    }
+}
 <PageTitle>Home</PageTitle>
 
     <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
         <MudGrid>
             <MudItem xs="12" sm="6" md="4">
-                <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;"></MudPaper>
+                <MudPaper Elevation="2" Class="pa-4" Style="height: 300px;">
+                    <input @bind="searchQuery" placeholder="Planet name..." class="search-input" />
+                    <button @onclick="Search">Search</button>
+                </MudPaper>
             </MudItem>
             <MudItem xs="12" sm="6" md="4">
-                <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;"></MudPaper>
+                <MudPaper Elevation="2" Class="pa-4" Style="height: 300px;"></MudPaper>
             </MudItem>
             <MudItem xs="12" sm="12" md="4">
-                <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;"></MudPaper>
-            </MudItem>
-            <MudItem xs="12" sm="6">
-                <MudGrid>
-                    <MudItem xs="12">
-                        <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;"></MudPaper>
-                    </MudItem>
-                    <MudItem xs="12">
-                        <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;"></MudPaper>
-                    </MudItem>
-                </MudGrid>
-            </MudItem>
-            <MudItem xs="12" sm="6">
-                <MudPaper Elevation="2" Class="pa-4" Style="height: 100%"></MudPaper>
-            </MudItem>
-            <MudItem xs="12" sm="6" md="4">
-                <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;"></MudPaper>
-            </MudItem>
-            <MudItem xs="12" sm="6" md="4">
-                <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;"></MudPaper>
-            </MudItem>
-            <MudItem xs="12" sm="12" md="4">
-                <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;"></MudPaper>
+                <MudPaper Elevation="2" Class="pa-4" Style="height: 300px;"></MudPaper>
             </MudItem>
         </MudGrid>
     </MudContainer>
