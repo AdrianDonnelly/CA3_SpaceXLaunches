@@ -12,7 +12,10 @@
                        OnClick="@((e) => DrawerToggle())" />
 
         <MudSpacer />
-        <MudText Typo="Typo.h5">Exo-Planet Explorer</MudText>
+        <MudLink Href="/" Class="cursor-pointer">
+            <MudText Typo="Typo.h5" Class="text-white" >Exo-Planet Explorer</MudText>
+        </MudLink>
+
         <MudSpacer />
 
         <MudIconButton Icon="@Icons.Material.Filled.MoreVert"
@@ -24,6 +27,15 @@
         <MudDrawerHeader>
             <MudText Typo="Typo.h5">Applications</MudText>
         </MudDrawerHeader>
+        <MudDrawerContainer>
+            <MudNavLink Href="/" Match="NavLinkMatch.All">
+                Home
+            </MudNavLink>
+            <MudNavLink Href="/counter" Match="NavLinkMatch.All">
+                Counter
+            </MudNavLink>
+
+        </MudDrawerContainer>
     </MudDrawer>
 
     <MudMainContent>
