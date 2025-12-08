@@ -1,4 +1,6 @@
 using System.Net.Http.Json;
+using System.Text.Json.Serialization;
+
 
 namespace X00194620_Ca3.Services
 {
@@ -11,52 +13,81 @@ namespace X00194620_Ca3.Services
             _http = http;
         }
 
-        // Fetch all launches
         public async Task<List<Launch>> GetLaunchesAsync()
         {
-            var launches = await _http.GetFromJsonAsync<List<Launch>>(
-                "https://api.spacexdata.com/v4/launches"
-            );
-
-            return launches ?? new List<Launch>();
+            return await _http.GetFromJsonAsync<List<Launch>>(
+                "https://api.spacexdata.com/v5/launches"
+            ) ?? new List<Launch>();
         }
 
-        // Fetch a single launch by ID
+
         public async Task<Launch?> GetLaunchAsync(string id)
         {
             return await _http.GetFromJsonAsync<Launch>(
-                $"https://api.spacexdata.com/v4/launches/{id}"
+                $"https://api.spacexdata.com/v5/launches/{id}"
             );
         }
     }
 
-    // ===================== MODELS =====================
-
+    // ----------------------
+    // MODELS BELOW (NOT NESTED)
+    // ----------------------
     public class Launch
     {
-        public string Id { get; set; } = "";
-        public string Name { get; set; } = "";
-        public DateTime DateUtc { get; set; }
-        public bool? Success { get; set; }
-        public string? Details { get; set; }
-        public string Rocket { get; set; } = "";
-        public Links Links { get; set; } = new();
-    }
+        [JsonPropertyName("id")]
+        public string Id { get; set; }
 
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
+        [JsonPropertyName("date_utc")]
+        public DateTime? DateUtc { get; set; }
+
+        [JsonPropertyName("success")]
+        public bool? Success { get; set; }
+
+        [JsonPropertyName("links")]
+        public Links Links { get; set; }
+    }
     public class Links
     {
-        public Patch Patch { get; set; } = new();
-        public Flickr Flickr { get; set; } = new();
-    }
+        [JsonPropertyName("patch")]
+        public Patch Patch { get; set; }
 
+        [JsonPropertyName("flickr")]
+        public Flickr Flickr { get; set; }
+
+        [JsonPropertyName("presskit")]
+        public string Presskit { get; set; }
+
+        [JsonPropertyName("webcast")]
+        public string Webcast { get; set; }
+
+        [JsonPropertyName("youtube_id")]
+        public string YoutubeId { get; set; }
+
+        [JsonPropertyName("article")]
+        public string Article { get; set; }
+
+        [JsonPropertyName("wikipedia")]
+        public string Wikipedia { get; set; }
+    }
+    
     public class Patch
     {
-        public string? Small { get; set; }
-        public string? Large { get; set; }
-    }
+        [JsonPropertyName("small")]
+        public string Small { get; set; }
 
+        [JsonPropertyName("large")]
+        public string Large { get; set; }
+    }
+    
     public class Flickr
     {
-        public List<string> Original { get; set; } = new();
+        [JsonPropertyName("small")]
+        public List<string> Small { get; set; }
+
+        [JsonPropertyName("original")]
+        public List<string> Original { get; set; }
     }
 }

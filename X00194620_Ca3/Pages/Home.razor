@@ -18,20 +18,26 @@
     else if (launches is not null)
     {
         <MudList T="object" Dense="true">
-
             @foreach (var launch in launches){
                 <MudPaper Class="d-flex align-center mb-2 p-3"
                           Style="cursor:pointer"
                           Elevation="1"
                           @onclick="() => OpenLaunch(launch.Id)">
 
-                    <MudAvatar Size="Size.Large"
-                               Image="@(launch.Links?.Patch?.Small ?? "/images/default-patch.png")"
-                               Class="mr-4"/>
+                    <img src="@launch.Links.Patch.Small"
+                         alt="@launch.Name Patch"
+                         style="width: 50%; height: 50%; object-fit: scale-down;"
+                         onerror="this.onerror=null; this.src='/images/default-patch.png';" />
+
 
                     <div class="flex-grow-1">
                         <b>@(launch.Name ?? "Unknown Mission")</b><br/>
-                        @(launch.DateUtc.ToLocalTime().ToString("dd MMM yyyy") ?? "Unknown Date")
+                        @(launch.DateUtc?.ToLocalTime().ToString("dd MMM yyyy") ?? "Unknown Date")
+
+                        <!-- DEBUG: show the image URL as plain text -->
+                        <div style="font-size: 10px; color: grey;">
+                            Patch: @launch.Links?.Patch?.Small
+                        </div>
                     </div>
 
                     <MudChip
@@ -40,6 +46,7 @@
                         Variant="Variant.Filled"/>
                 </MudPaper>
             }
+            s
 
         </MudList>
     }
