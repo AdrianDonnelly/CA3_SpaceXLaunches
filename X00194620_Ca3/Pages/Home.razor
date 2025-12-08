@@ -1,50 +1,74 @@
 ﻿@page "/"
-@using System.Text.Json
 @using X00194620_Ca3.Services
-@inject ApiService ApiService
-@inject NavigationManager Navigation
+@inject SpaceXService SpaceX
+@inject NavigationManager Nav
 
+<PageTitle>SpaceX Launch Timeline</PageTitle>
 
-@if (loading)
-{
-    <p>Loading...</p>
-}
-else if (results is not null)
-{
-    <ul>
-        @foreach (var obj in results)
-        {
-            <li>@obj.Name (@obj.ObjectType)</li>
-        }
-    </ul>
-}
-@code {
-    private string searchQuery = "";
-    private List<ApiService.ArcObject>? results;
-    private bool loading = false;
+<MudContainer Class="mt-8">
 
-    private async Task Search()
+    <MudText Typo="Typo.h4" GutterBottom="true">
+        SpaceX Launch Timeline
+    </MudText>
+
+    @if (loading)
     {
-        loading = true;
-        results = await ApiService.SearchObjects(searchQuery);
+        <MudProgressCircular Indeterminate="true" />
+    }
+    else if (launches is not null)
+    {
+        <MudList T="object" Dense="true">
+
+            @foreach (var launch in launches){
+                <MudPaper Class="d-flex align-center mb-2 p-3"
+                          Style="cursor:pointer"
+                          Elevation="1"
+                          @onclick="() => OpenLaunch(launch.Id)">
+
+                    <MudAvatar Size="Size.Large"
+                               Image="@(launch.Links?.Patch?.Small ?? "/images/default-patch.png")"
+                               Class="mr-4"/>
+
+                    <div class="flex-grow-1">
+                        <b>@(launch.Name ?? "Unknown Mission")</b><br/>
+                        @(launch.DateUtc.ToLocalTime().ToString("dd MMM yyyy") ?? "Unknown Date")
+                    </div>
+
+                    <MudChip
+                        Color="@StatusColor(launch.Success)"
+                        Text="@StatusText(launch.Success)"
+                        Variant="Variant.Filled"/>
+                </MudPaper>
+            }
+
+        </MudList>
+    }
+
+</MudContainer>
+
+@code {
+    private List<Launch>? launches;
+    private bool loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        launches = await SpaceX.GetLaunchesAsync();
+        launches = launches.OrderBy(x => x.DateUtc).ToList();
         loading = false;
     }
-}
-<PageTitle>Home</PageTitle>
 
-    <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
-        <MudGrid>
-            <MudItem xs="12" sm="6" md="4">
-                <MudPaper Elevation="2" Class="pa-4" Style="height: 300px;">
-                    <input @bind="searchQuery" placeholder="Planet name..." class="search-input" />
-                    <button @onclick="Search">Search</button>
-                </MudPaper>
-            </MudItem>
-            <MudItem xs="12" sm="6" md="4">
-                <MudPaper Elevation="2" Class="pa-4" Style="height: 300px;"></MudPaper>
-            </MudItem>
-            <MudItem xs="12" sm="12" md="4">
-                <MudPaper Elevation="2" Class="pa-4" Style="height: 300px;"></MudPaper>
-            </MudItem>
-        </MudGrid>
-    </MudContainer>
+    private void OpenLaunch(string id)
+    {
+        Nav.NavigateTo($"/launch/{id}");
+    }
+
+    private Color StatusColor(bool? success) =>
+        success == true ? Color.Success :
+        success == false ? Color.Error :
+        Color.Warning;
+
+    private string StatusText(bool? success) =>
+        success == true ? "Success" :
+        success == false ? "Failed" :
+        "Unknown";
+}

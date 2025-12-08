@@ -1,42 +1,62 @@
-namespace X00194620_Ca3.Services;
-
 using System.Net.Http.Json;
 
-public class ApiService
+namespace X00194620_Ca3.Services
 {
-    private readonly HttpClient _http;
-
-    public ApiService(HttpClient http)
+    public class SpaceXService
     {
-        _http = http;
+        private readonly HttpClient _http;
+
+        public SpaceXService(HttpClient http)
+        {
+            _http = http;
+        }
+
+        // Fetch all launches
+        public async Task<List<Launch>> GetLaunchesAsync()
+        {
+            var launches = await _http.GetFromJsonAsync<List<Launch>>(
+                "https://api.spacexdata.com/v4/launches"
+            );
+
+            return launches ?? new List<Launch>();
+        }
+
+        // Fetch a single launch by ID
+        public async Task<Launch?> GetLaunchAsync(string id)
+        {
+            return await _http.GetFromJsonAsync<Launch>(
+                $"https://api.spacexdata.com/v4/launches/{id}"
+            );
+        }
     }
 
-    public async Task<object> GetRootAsync()
-    {
-        return await _http.GetFromJsonAsync<object>("https://api.arcsecond.io/");
-    }
-    
-    public async Task<List<ArcObject>> SearchObjects(string query)
-    {
-        if (string.IsNullOrWhiteSpace(query))
-            return new List<ArcObject>();
+    // ===================== MODELS =====================
 
-        string url = $"https://api.arcsecond.io/objects?q={query}&limit=10";
-
-        var result = await _http.GetFromJsonAsync<ArcObjectResponse>(url);
-        return result?.Results ?? new List<ArcObject>();
+    public class Launch
+    {
+        public string Id { get; set; } = "";
+        public string Name { get; set; } = "";
+        public DateTime DateUtc { get; set; }
+        public bool? Success { get; set; }
+        public string? Details { get; set; }
+        public string Rocket { get; set; } = "";
+        public Links Links { get; set; } = new();
     }
 
-    public class ArcObjectResponse
+    public class Links
     {
-        public List<ArcObject> Results { get; set; }
-        public int Count { get; set; }
+        public Patch Patch { get; set; } = new();
+        public Flickr Flickr { get; set; } = new();
     }
 
-    public class ArcObject
+    public class Patch
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string ObjectType { get; set; }
+        public string? Small { get; set; }
+        public string? Large { get; set; }
+    }
+
+    public class Flickr
+    {
+        public List<string> Original { get; set; } = new();
     }
 }
