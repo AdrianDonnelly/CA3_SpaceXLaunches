@@ -23,7 +23,7 @@
                           Immediate="true"
                           Class="flex-grow-1"/>
 
-            <MudSelect T="string" @bind-Value="SelectedStatus" Label="Status" Style="min-width:140px;">
+            <MudSelect T="string" @bind-Value="SelectedStatus" Style="min-width:140px;">
                 <MudSelectItem Value='@("All")'>All</MudSelectItem>
                 <MudSelectItem Value='@("Success")'>Success</MudSelectItem>
                 <MudSelectItem Value='@("Failed")'>Failed</MudSelectItem>
@@ -42,7 +42,6 @@
                       Elevation="1"
                       @onclick="() => OpenLaunch(launch.Id)">
 
-                <!-- smaller fixed-size patch image with safe null handling -->
                 <img src="@(launch.Links?.Patch?.Small ?? "/images/default-patch.png")"
                      alt="@(launch.Name ?? "Mission") Patch"
                      style="width:64px; height:64px; object-fit:contain; margin-right:12px;" />
@@ -51,11 +50,7 @@
                 <div class="flex-grow-1">
                     <b>@(launch.Name ?? "Unknown Mission")</b><br/>
                     @(launch.DateUtc?.ToLocalTime().ToString("dd MMM yyyy") ?? "Unknown Date")
-
-                    <!-- DEBUG: show the image URL as plain text -->
-                    <div style="font-size: 10px; color: grey;">
-                        Patch: @launch.Links?.Patch?.Small
-                    </div>
+                    
                 </div>
 
                 <MudChip
@@ -75,7 +70,7 @@
                 SelectedChanged="@((int page) => { currentPage = page; InvokeAsync(StateHasChanged); })"
                 ShowFirstButton="true"
                 ShowLastButton="true"
-                Class="mt-4" />
+                Class="mt-4 mb-10" />
         </div>
     }
 
