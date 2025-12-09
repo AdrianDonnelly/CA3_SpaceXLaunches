@@ -7,9 +7,7 @@
 
 <MudLayout>
 
-    <!-- NAV BAR -->
     <MudAppBar Elevation="1" Color="Color.Primary">
-        <!-- Drawer Toggle -->
         <MudIconButton Icon="@Icons.Material.Filled.Menu"
                        Color="Color.Inherit"
                        Edge="Edge.Start"
@@ -17,9 +15,8 @@
 
         <MudSpacer/>
 
-        <!-- Title -->
         <MudLink Href="/" Class="cursor-pointer" Style="text-decoration:none;">
-            <MudText Typo="Typo.h5" Style="color:white;">
+            <MudText Typo="Typo.h4" Style="color:white;">
                 SpaceX Launches
             </MudText>
         </MudLink>
@@ -27,7 +24,6 @@
 
         <MudSpacer/>
 
-        <!-- Dark Mode Toggle -->
         <MudTooltip Text="Toggle Dark Mode">
             <MudIconButton Icon="@(_isDarkMode ? Icons.Material.Filled.DarkMode : Icons.Material.Filled.LightMode)"
                            Color="Color.Inherit"
@@ -36,7 +32,6 @@
         </MudTooltip>
     </MudAppBar>
 
-    <!-- SIDE DRAWER -->
     <MudDrawer @bind-Open="_drawerOpen" Elevation="2" Color="Color.Primary" Variant="DrawerVariant.Temporary">
         <MudDrawerHeader>
             <MudText Typo="Typo.h5" Color="Color.Inherit">Navigation</MudText>
@@ -54,11 +49,10 @@
             <MudNavLink Href="/statistics" Icon="@Icons.Material.Filled.BarChart">
                 Statistics
             </MudNavLink>
-            
+
         </MudDrawerContainer>
     </MudDrawer>
 
-    <!-- PAGE BODY -->
     <MudMainContent>
         @Body
     </MudMainContent>

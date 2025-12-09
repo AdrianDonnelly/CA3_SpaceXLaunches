@@ -29,9 +29,6 @@ namespace X00194620_Ca3.Services
         }
     }
 
-    // ----------------------
-    // MODELS BELOW (NOT NESTED)
-    // ----------------------
     public class Launch
     {
         [JsonPropertyName("id")]
@@ -62,9 +59,6 @@ namespace X00194620_Ca3.Services
 
         [JsonPropertyName("webcast")]
         public string Webcast { get; set; }
-
-        [JsonPropertyName("youtube_id")]
-        public string YoutubeId { get; set; }
 
         [JsonPropertyName("article")]
         public string Article { get; set; }

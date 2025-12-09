@@ -105,7 +105,7 @@
                     <MudDivider Class="mb-3"/>
 
                     <MudButton Variant="Variant.Outlined"
-                               OnClick="ClearFilters"
+                               OnClick="@ClearFilters"
                                StartIcon="@Icons.Material.Filled.Clear"
                                Color="Color.Default"
                                FullWidth="true">
@@ -150,10 +150,7 @@
                         <MudPagination
                             Count="@TotalPages"
                             Selected="@currentPage"
-                            SelectedChanged="@((int page) => {
-                                                 currentPage = page;
-                                                 InvokeAsync(StateHasChanged);
-                                             })"
+                            SelectedChanged="@((int page) => {currentPage = page; InvokeAsync(StateHasChanged);})"
                             ShowFirstButton="true"
                             ShowLastButton="true"
                             Class="mt-4 mb-10"/>

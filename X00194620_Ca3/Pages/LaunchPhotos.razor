@@ -5,21 +5,18 @@
 <MudContainer Class="mt-8">
     <MudText Typo="Typo.h4" GutterBottom="true">Launch Photos Gallery</MudText>
 
-    @if (loading)
-    {
+    @if (loading){
         <div class="d-flex justify-center align-center" style="min-height: 400px;">
-            <MudProgressCircular Indeterminate="true" Size="Size.Large" />
+            <MudProgressCircular Indeterminate="true" Size="Size.Large"/>
         </div>
     }
-    else if (!photos.Any())
-    {
+    else if (!photos.Any()){
         <MudAlert Severity="Severity.Info">No launch photos available</MudAlert>
     }
-    else
-    {
+    else{
         <MudPaper Class="pa-4 mb-4" Elevation="1">
             <MudGrid Spacing="2">
-                <MudItem xs="12" md="8">
+                <MudItem xs="12" md="6">
                     <MudTextField @bind-Value="SearchText"
                                   Placeholder="Search by mission name..."
                                   Adornment="Adornment.Start"
@@ -28,9 +25,25 @@
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"/>
                 </MudItem>
-                <MudItem xs="12" md="4">
-                    <MudButton Variant="Variant.Text" 
-                               OnClick="ClearSearch" 
+                <MudButtonGroup FullWidth="true" Size="Size.Small" Class="mb-3">
+                    <MudButton OnClick="@(() => SetSortOrder(SortOrder.Ascending))"
+                               Variant="@(sortOrder == SortOrder.Ascending ? Variant.Filled : Variant.Outlined)"
+                               Color="@(sortOrder == SortOrder.Ascending ? Color.Primary : Color.Default)"
+                               StartIcon="@Icons.Material.Filled.ArrowUpward"
+                               Size="Size.Small">
+                        Oldest
+                    </MudButton>
+                    <MudButton OnClick="@(() => SetSortOrder(SortOrder.Descending))"
+                               Variant="@(sortOrder == SortOrder.Descending ? Variant.Filled : Variant.Outlined)"
+                               Color="@(sortOrder == SortOrder.Descending ? Color.Primary : Color.Default)"
+                               StartIcon="@Icons.Material.Filled.ArrowDownward"
+                               Size="Size.Small">
+                        Newest
+                    </MudButton>
+                </MudButtonGroup>
+                <MudItem xs="12" sm="6" md="3" Class="d-flex align-center">
+                    <MudButton Variant="Variant.Text"
+                               OnClick="ClearSearch"
                                StartIcon="@Icons.Material.Filled.Clear"
                                FullWidth="true">
                         Clear Search
@@ -40,18 +53,18 @@
         </MudPaper>
 
         <MudText Typo="Typo.body1" Class="mb-3" Color="Color.Primary">
-            Showing @FilteredPhotos.Count photo(s) from @FilteredPhotos.Select(p => p.LaunchName).Distinct().Count() mission(s)
+            Showing @FilteredPhotos.Count photo(s)
+            from @FilteredPhotos.Select(p => p.LaunchName).Distinct().Count() mission(s)
         </MudText>
 
         <MudGrid Spacing="3">
-            @foreach (var photo in PagedPhotos)
-            {
+            @foreach (var photo in PagedPhotos){
                 <MudItem xs="12" sm="6" md="4" lg="3">
                     <MudCard>
-                        <MudCardMedia Image="@photo.ImageUrl" 
-                                      Height="250" 
+                        <MudCardMedia Image="@photo.ImageUrl"
+                                      Height="250"
                                       Style="cursor: pointer; object-fit: cover;"
-                                      @onclick="() => OpenImageDialog(photo)" />
+                                      @onclick="() => OpenImageDialog(photo)"/>
                         <MudCardContent>
                             <MudText Typo="Typo.body2" Class="font-weight-bold">@photo.LaunchName</MudText>
                             <MudText Typo="Typo.caption" Color="Color.Primary">
@@ -59,8 +72,8 @@
                             </MudText>
                         </MudCardContent>
                         <MudCardActions>
-                            <MudButton Variant="Variant.Text" 
-                                       Color="Color.Primary" 
+                            <MudButton Variant="Variant.Text"
+                                       Color="Color.Primary"
                                        Size="Size.Small"
                                        Href="@($"/launch/{photo.LaunchId}")">
                                 View Launch
@@ -71,39 +84,41 @@
             }
         </MudGrid>
 
-        @if (TotalPages > 1)
-        {
+        @if (TotalPages > 1){
             <div class="d-flex justify-center mt-6">
-                <MudPagination 
+                <MudPagination
                     Count="@TotalPages"
                     Selected="@currentPage"
-                    SelectedChanged="@((int page) => { currentPage = page; StateHasChanged(); })"
+                    SelectedChanged="@((int page) => {
+                                         currentPage = page;
+                                         StateHasChanged();
+                                     })"
                     ShowFirstButton="true"
                     Class="mt-4 mb-10"
-                    ShowLastButton="true" />
+                    ShowLastButton="true"/>
             </div>
         }
     }
 </MudContainer>
 
-@if (imageDialogOpen && selectedPhoto != null)
-{
+@if (imageDialogOpen && selectedPhoto != null){
     <MudOverlay Visible="true" DarkBackground="true" ZIndex="9999" OnClick="@CloseImageDialog">
-        <MudPaper Class="pa-6" Style="max-width: 90vw; max-height: 90vh; overflow: auto;" @onclick:stopPropagation="true">
+        <MudPaper Class="pa-6" Style="max-width: 90vw; max-height: 90vh; overflow: auto;"
+                  @onclick:stopPropagation="true">
             <div class="d-flex justify-space-between align-center mb-4">
                 <MudText Typo="Typo.h6">@selectedPhoto.LaunchName</MudText>
-                <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@CloseImageDialog" />
+                <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@CloseImageDialog"/>
             </div>
-            
+
             <div class="d-flex flex-column align-center">
-                <MudImage Src="@selectedPhoto.ImageUrl" 
-                          Alt="@selectedPhoto.LaunchName" 
-                          Style="width: 100%; height: auto; max-height: 70vh; object-fit: contain;" />
+                <MudImage Src="@selectedPhoto.ImageUrl"
+                          Alt="@selectedPhoto.LaunchName"
+                          Style="width: 100%; height: auto; max-height: 70vh; object-fit: contain;"/>
                 <MudText Typo="Typo.body2" Color="Color.Primary" Class="mt-3">
                     @selectedPhoto.LaunchDate?.ToString("MMMM dd, yyyy")
                 </MudText>
             </div>
-            
+
             <div class="d-flex justify-end mt-4" style="gap: 8px;">
                 <MudButton Color="Color.Primary" Variant="Variant.Filled" Href="@($"/launch/{selectedPhoto.LaunchId}")">
                     View Launch Details
@@ -113,4 +128,3 @@
         </MudPaper>
     </MudOverlay>
 }
-

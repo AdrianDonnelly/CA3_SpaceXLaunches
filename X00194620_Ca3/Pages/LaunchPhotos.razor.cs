@@ -8,6 +8,12 @@ public class LaunchPhoto{
     public string LaunchId{ get; set; } = string.Empty;
     public string LaunchName{ get; set; } = string.Empty;
     public DateTime? LaunchDate{ get; set; }
+    private SortOrder sortOrder = SortOrder.Descending;
+}
+
+public enum PhotoSortOrder{
+    Newest,
+    Oldest
 }
 
 public partial class LaunchPhotos : ComponentBase{
@@ -19,6 +25,8 @@ public partial class LaunchPhotos : ComponentBase{
 
     private int currentPage = 1;
     private int pageSize = 20;
+    private SortOrder sortOrder = SortOrder.Descending;
+
 
     private bool imageDialogOpen = false;
     private LaunchPhoto? selectedPhoto = null;
@@ -72,6 +80,13 @@ public partial class LaunchPhotos : ComponentBase{
         loading = false;
     }
 
+    private void SetSortOrder(SortOrder order){
+        if (sortOrder == order) return;
+        sortOrder = order;
+        currentPage = 1;
+        StateHasChanged();
+    }
+
     private List<LaunchPhoto> FilteredPhotos{
         get {
             var query = photos.AsEnumerable();
@@ -81,7 +96,13 @@ public partial class LaunchPhotos : ComponentBase{
                 query = query.Where(p => p.LaunchName.ToLowerInvariant().Contains(lower));
             }
 
-            return query.OrderByDescending(p => p.LaunchDate ?? DateTime.MinValue).ToList();
+            query = sortOrder switch{
+                SortOrder.Ascending => query.OrderBy(p => p.LaunchDate ?? DateTime.MinValue),
+                SortOrder.Descending => query.OrderByDescending(p => p.LaunchDate ?? DateTime.MinValue),
+                _ => query
+            };
+
+            return query.ToList();
         }
     }
 }
