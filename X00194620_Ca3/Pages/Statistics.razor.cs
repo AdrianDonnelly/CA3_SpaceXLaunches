@@ -4,12 +4,6 @@ using X00194620_Ca3.Services;
 
 namespace X00194620_Ca3.Pages;
 
-public class LaunchSiteStats{
-    public string SiteName{ get; set; } = string.Empty;
-    public int LaunchCount{ get; set; }
-    public int SuccessCount{ get; set; }
-    public double SuccessRate{ get; set; }
-}
 
 public partial class Statistics : ComponentBase{
     [Inject] private SpaceXService SpaceX{ get; set; } = default!;
@@ -77,41 +71,10 @@ public partial class Statistics : ComponentBase{
                 .ToArray();
         }
     }
-
-    private List<LaunchSiteStats> TopLaunchSites{
-        get {
-            if (launches == null || !launches.Any())
-                return new List<LaunchSiteStats>();
-            var siteStats = launches
-                .Where(l => !string.IsNullOrWhiteSpace(l.Id)) // Basic validation
-                .GroupBy(l => GetLaunchSiteName(l))
-                .Select(g => new LaunchSiteStats{
-                    SiteName = g.Key,
-                    LaunchCount = g.Count(),
-                    SuccessCount = g.Count(l => l.Success == true),
-                    SuccessRate = g.Count() > 0
-                        ? Math.Round((double)g.Count(l => l.Success == true) / g.Count() * 100, 1)
-                        : 0
-                })
-                .OrderByDescending(s => s.LaunchCount)
-                .Take(5)
-                .ToList();
-
-            return siteStats;
-        }
-    }
-
+    
     protected override async Task OnInitializedAsync(){
         loading = true;
         launches = await SpaceX.GetLaunchesAsync();
         loading = false;
-    }
-
-    private string GetLaunchSiteName(Launch launch){
-        if (!string.IsNullOrWhiteSpace(launch.Name)){
-            return launch.Id ?? "Unknown Site";
-        }
-
-        return "Unknown Site";
     }
 }
