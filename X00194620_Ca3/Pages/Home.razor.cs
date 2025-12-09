@@ -15,6 +15,8 @@ public partial class Home : ComponentBase
     // Filters (backing fields)
     private string searchText = string.Empty;
     private string selectedStatus = "All";
+    private DateTime? fromDate = null;
+    private DateTime? toDate = null;
 
     // Pagination
     private int currentPage = 1;
@@ -40,6 +42,28 @@ public partial class Home : ComponentBase
             if (selectedStatus == value) return;
             selectedStatus = value;
             currentPage = 1; // reset page when changing status
+        }
+    }
+
+    private DateTime? FromDate
+    {
+        get => fromDate;
+        set
+        {
+            if (fromDate == value) return;
+            fromDate = value;
+            currentPage = 1; // reset page when changing date
+        }
+    }
+
+    private DateTime? ToDate
+    {
+        get => toDate;
+        set
+        {
+            if (toDate == value) return;
+            toDate = value;
+            currentPage = 1; // reset page when changing date
         }
     }
 
@@ -73,6 +97,20 @@ public partial class Home : ComponentBase
                 _ => query
             };
 
+            // date range filter
+            if (FromDate.HasValue)
+            {
+                var fromDateUtc = FromDate.Value.ToUniversalTime();
+                query = query.Where(l => l.DateUtc.HasValue && l.DateUtc.Value >= fromDateUtc);
+            }
+
+            if (ToDate.HasValue)
+            {
+                // Add one day to include the entire end date
+                var toDateUtc = ToDate.Value.AddDays(1).ToUniversalTime();
+                query = query.Where(l => l.DateUtc.HasValue && l.DateUtc.Value < toDateUtc);
+            }
+
             // final ordering - return as List to avoid multiple enumerations
             return query.OrderBy(x => x.DateUtc ?? DateTime.MinValue).ToList();
         }
@@ -105,6 +143,8 @@ public partial class Home : ComponentBase
     {
         SearchText = string.Empty;
         SelectedStatus = "All";
+        FromDate = null;
+        ToDate = null;
         currentPage = 1;
     }
 

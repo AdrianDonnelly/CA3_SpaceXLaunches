@@ -15,22 +15,35 @@
     }
     else if (launches is not null){
         <!-- Search and filters -->
-        <div class="d-flex mb-4 align-center" style="gap:12px;">
+        <div class="d-flex mb-4 align-center flex-wrap" style="gap:12px;">
             <MudTextField @bind-Value="SearchText"
                           Placeholder="Search mission..."
                           Adornment="Adornment.Start"
                           AdornmentIcon="@Icons.Material.Filled.Search"
                           Immediate="true"
-                          Class="flex-grow-1"/>
+                          Class="flex-grow-1"
+                          Style="min-width:200px;"/>
 
-            <MudSelect T="string" @bind-Value="SelectedStatus" Style="min-width:140px;">
+            <MudSelect T="string" @bind-Value="SelectedStatus" Label="Status" Style="min-width:140px;">
                 <MudSelectItem Value='@("All")'>All</MudSelectItem>
                 <MudSelectItem Value='@("Success")'>Success</MudSelectItem>
                 <MudSelectItem Value='@("Failed")'>Failed</MudSelectItem>
                 <MudSelectItem Value='@("Unknown")'>Unknown</MudSelectItem>
             </MudSelect>
 
-            <MudButton Variant="Variant.Outlined" OnClick="ClearFilters">Clear</MudButton>
+            <MudDatePicker @bind-Date="FromDate" 
+                           Label="From Date" 
+                           Placeholder="Select start date"
+                           Editable="true"
+                           Style="min-width:180px;" />
+
+            <MudDatePicker @bind-Date="ToDate" 
+                           Label="To Date" 
+                           Placeholder="Select end date"
+                           Editable="true"
+                           Style="min-width:180px;" />
+
+            <MudButton Variant="Variant.Outlined" OnClick="ClearFilters">Clear All</MudButton>
         </div>
     }
 
