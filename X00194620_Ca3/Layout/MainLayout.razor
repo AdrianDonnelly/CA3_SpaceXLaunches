@@ -48,9 +48,10 @@
                 Home
             </MudNavLink>
 
-            <MudNavLink Href="/counter" Icon="@Icons.Material.Filled.Calculate">
-                Counter
+            <MudNavLink Href="/photos" Icon="@Icons.Material.Filled.PhotoLibrary">
+                Launch Photos
             </MudNavLink>
+            
         </MudDrawerContainer>
     </MudDrawer>
 
@@ -64,7 +65,7 @@
 
 @code {
     private bool _drawerOpen = true;
-    private bool _isDarkMode = false;
+    private bool _isDarkMode = true;
 
     private void DrawerToggle() => _drawerOpen = !_drawerOpen;
 }

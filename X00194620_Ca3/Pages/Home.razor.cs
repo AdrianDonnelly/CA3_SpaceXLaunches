@@ -4,6 +4,12 @@ using X00194620_Ca3.Services;
 
 namespace X00194620_Ca3.Pages;
 
+public enum SortOrder
+{
+    Ascending,
+    Descending
+}
+
 public partial class Home : ComponentBase
 {
     [Inject] private SpaceXService SpaceX { get; set; } = default!;
@@ -17,6 +23,15 @@ public partial class Home : ComponentBase
     private string selectedStatus = "All";
     private DateTime? fromDate = null;
     private DateTime? toDate = null;
+    
+    // Advanced filters
+    private bool hasPressKit = false;
+    private bool hasPhotos = false;
+    private bool hasWebcast = false;
+    private bool hasArticle = false;
+
+    // Sorting
+    private SortOrder sortOrder = SortOrder.Descending;
 
     // Pagination
     private int currentPage = 1;
@@ -67,6 +82,50 @@ public partial class Home : ComponentBase
         }
     }
 
+    private bool HasPressKit
+    {
+        get => hasPressKit;
+        set
+        {
+            if (hasPressKit == value) return;
+            hasPressKit = value;
+            currentPage = 1;
+        }
+    }
+
+    private bool HasPhotos
+    {
+        get => hasPhotos;
+        set
+        {
+            if (hasPhotos == value) return;
+            hasPhotos = value;
+            currentPage = 1;
+        }
+    }
+
+    private bool HasWebcast
+    {
+        get => hasWebcast;
+        set
+        {
+            if (hasWebcast == value) return;
+            hasWebcast = value;
+            currentPage = 1;
+        }
+    }
+
+    private bool HasArticle
+    {
+        get => hasArticle;
+        set
+        {
+            if (hasArticle == value) return;
+            hasArticle = value;
+            currentPage = 1;
+        }
+    }
+
     protected override async Task OnInitializedAsync()
     {
         launches = await SpaceX.GetLaunchesAsync();
@@ -80,6 +139,9 @@ public partial class Home : ComponentBase
             if (launches is null) return new List<Launch>();
 
             var query = launches.AsEnumerable();
+
+            // Filter out launches without patches
+            query = query.Where(l => !string.IsNullOrWhiteSpace(l.Links?.Patch?.Small));
 
             // text search (name)
             if (!string.IsNullOrWhiteSpace(SearchText))
@@ -111,8 +173,33 @@ public partial class Home : ComponentBase
                 query = query.Where(l => l.DateUtc.HasValue && l.DateUtc.Value < toDateUtc);
             }
 
-            // final ordering - return as List to avoid multiple enumerations
-            return query.OrderBy(x => x.DateUtc ?? DateTime.MinValue).ToList();
+            // Advanced filters
+            if (HasPressKit)
+            {
+                query = query.Where(l => !string.IsNullOrWhiteSpace(l.Links?.Presskit));
+            }
+
+            if (HasPhotos)
+            {
+                query = query.Where(l => l.Links?.Flickr?.Original != null && l.Links.Flickr.Original.Any());
+            }
+
+            if (HasWebcast)
+            {
+                query = query.Where(l => !string.IsNullOrWhiteSpace(l.Links?.Webcast));
+            }
+
+            if (HasArticle)
+            {
+                query = query.Where(l => !string.IsNullOrWhiteSpace(l.Links?.Article));
+            }
+
+            // Apply sorting based on sort order
+            var sortedQuery = sortOrder == SortOrder.Ascending
+                ? query.OrderBy(x => x.DateUtc ?? DateTime.MinValue)
+                : query.OrderByDescending(x => x.DateUtc ?? DateTime.MaxValue);
+
+            return sortedQuery.ToList();
         }
     }
 
@@ -139,12 +226,25 @@ public partial class Home : ComponentBase
         StateHasChanged();
     }
 
+    private void SetSortOrder(SortOrder order)
+    {
+        if (sortOrder == order) return;
+        sortOrder = order;
+        currentPage = 1; // reset to first page when changing sort
+        StateHasChanged();
+    }
+
     private void ClearFilters()
     {
         SearchText = string.Empty;
         SelectedStatus = "All";
         FromDate = null;
         ToDate = null;
+        HasPressKit = false;
+        HasPhotos = false;
+        HasWebcast = false;
+        HasArticle = false;
+        sortOrder = SortOrder.Descending;
         currentPage = 1;
     }
 

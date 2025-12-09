@@ -14,41 +14,123 @@
         <MudProgressCircular Indeterminate="true" />
     }
     else if (launches is not null){
-        <!-- Search and filters -->
-        <div class="d-flex mb-4 align-center flex-wrap" style="gap:12px;">
-            <MudTextField @bind-Value="SearchText"
-                          Placeholder="Search mission..."
-                          Adornment="Adornment.Start"
-                          AdornmentIcon="@Icons.Material.Filled.Search"
-                          Immediate="true"
-                          Class="flex-grow-1"
-                          Style="min-width:200px;"/>
+        <MudGrid Spacing="3">
+            <!-- Left Sidebar - Filters -->
+            <MudItem xs="12" md="3">
+                <MudPaper Class="pa-4" Elevation="2" Style="position: sticky; top: 20px;">
+                    <MudText Typo="Typo.h6" Class="mb-3">Filters</MudText>
+                    
+                    <!-- Search -->
+                    <MudTextField @bind-Value="SearchText"
+                                  Placeholder="Search mission..."
+                                  Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search"
+                                  Immediate="true"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  Class="mb-3"/>
 
-            <MudSelect T="string" @bind-Value="SelectedStatus" Label="Status" Style="min-width:140px;">
-                <MudSelectItem Value='@("All")'>All</MudSelectItem>
-                <MudSelectItem Value='@("Success")'>Success</MudSelectItem>
-                <MudSelectItem Value='@("Failed")'>Failed</MudSelectItem>
-                <MudSelectItem Value='@("Unknown")'>Unknown</MudSelectItem>
-            </MudSelect>
+                    <MudDivider Class="mb-3"/>
 
-            <MudDatePicker @bind-Date="FromDate" 
-                           Label="From Date" 
-                           Placeholder="Select start date"
-                           Editable="true"
-                           Style="min-width:180px;" />
+                    <!-- Status Filter -->
+                    <MudText Typo="Typo.subtitle2" Class="mb-2">Status</MudText>
+                    <MudSelect T="string" 
+                               @bind-Value="SelectedStatus" 
+                               Variant="Variant.Outlined"
+                               Margin="Margin.Dense"
+                               Class="mb-3">
+                        <MudSelectItem Value='@("All")'>All</MudSelectItem>
+                        <MudSelectItem Value='@("Success")'>Success</MudSelectItem>
+                        <MudSelectItem Value='@("Failed")'>Failed</MudSelectItem>
+                        <MudSelectItem Value='@("Unknown")'>Unknown</MudSelectItem>
+                    </MudSelect>
 
-            <MudDatePicker @bind-Date="ToDate" 
-                           Label="To Date" 
-                           Placeholder="Select end date"
-                           Editable="true"
-                           Style="min-width:180px;" />
+                    <MudDivider Class="mb-3"/>
 
-            <MudButton Variant="Variant.Outlined" OnClick="ClearFilters">Clear All</MudButton>
-        </div>
-    }
+                    <!-- Sort Order -->
+                    <MudText Typo="Typo.subtitle2" Class="mb-2">Sort By Date</MudText>
+                    <MudButtonGroup FullWidth="true" Size="Size.Small" Class="mb-3">
+                        <MudButton OnClick="@(() => SetSortOrder(SortOrder.Ascending))" 
+                                   Variant="@(sortOrder == SortOrder.Ascending ? Variant.Filled : Variant.Outlined)"
+                                   Color="@(sortOrder == SortOrder.Ascending ? Color.Primary : Color.Default)"
+                                   StartIcon="@Icons.Material.Filled.ArrowUpward"
+                                   Size="Size.Small">
+                            Oldest
+                        </MudButton>
+                        <MudButton OnClick="@(() => SetSortOrder(SortOrder.Descending))" 
+                                   Variant="@(sortOrder == SortOrder.Descending ? Variant.Filled : Variant.Outlined)"
+                                   Color="@(sortOrder == SortOrder.Descending ? Color.Primary : Color.Default)"
+                                   StartIcon="@Icons.Material.Filled.ArrowDownward"
+                                   Size="Size.Small">
+                            Newest
+                        </MudButton>
+                    </MudButtonGroup>
 
-    <MudList T="object" Dense="true">
-        @foreach (var launch in PagedLaunches)
+                    <MudDivider Class="mb-3"/>
+
+                    <!-- Date Range -->
+                    <MudText Typo="Typo.subtitle2" Class="mb-2">Date Range</MudText>
+                    <MudDatePicker @bind-Date="FromDate" 
+                                   Label="From Date" 
+                                   Variant="Variant.Outlined"
+                                   Margin="Margin.Dense"
+                                   Editable="true"
+                                   Class="mb-2" />
+                    <MudDatePicker @bind-Date="ToDate" 
+                                   Label="To Date" 
+                                   Variant="Variant.Outlined"
+                                   Margin="Margin.Dense"
+                                   Editable="true"
+                                   Class="mb-3" />
+
+                    <MudDivider Class="mb-3"/>
+
+                    <!-- Advanced Filters -->
+                    <MudText Typo="Typo.subtitle2" Class="mb-2">Advanced Filters</MudText>
+                    
+                    <MudCheckBox @bind-Value="HasPressKit" 
+                                 Label="Has Press Kit" 
+                                 Dense="true"
+                                 Color="Color.Primary" />
+                    
+                    <MudCheckBox @bind-Value="HasPhotos" 
+                                 Label="Has Photos" 
+                                 Dense="true"
+                                 Color="Color.Primary" />
+                    
+                    <MudCheckBox @bind-Value="HasWebcast" 
+                                 Label="Has Webcast" 
+                                 Dense="true"
+                                 Color="Color.Primary" />
+                    
+                    <MudCheckBox @bind-Value="HasArticle" 
+                                 Label="Has Article" 
+                                 Dense="true"
+                                 Color="Color.Primary"
+                                 Class="mb-3" />
+
+                    <MudDivider Class="mb-3"/>
+
+                    <!-- Clear Button -->
+                    <MudButton Variant="Variant.Outlined" 
+                               OnClick="ClearFilters" 
+                               StartIcon="@Icons.Material.Filled.Clear"
+                               Color="Color.Default"
+                               FullWidth="true">
+                        Clear All Filters
+                    </MudButton>
+
+                    <!-- Results Count -->
+                    <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mt-3">
+                        @TotalItems result(s) found
+                    </MudText>
+                </MudPaper>
+            </MudItem>
+
+            <!-- Right Content - Launch List -->
+            <MudItem xs="12" md="9">
+                <MudList T="object" Dense="true">
+                    @foreach (var launch in PagedLaunches)
         {
             <MudPaper Class="d-flex align-center mb-2 p-3"
                       Style="cursor:pointer"
@@ -72,19 +154,22 @@
                     Variant="Variant.Filled"/>
             </MudPaper>
         }
-    </MudList>
+                </MudList>
 
-    @if (TotalItems > 0)
-    {
-        <div class="d-flex flex-column align-center mt-3">
-            <MudPagination 
-                Count="@TotalPages"
-                Selected="@currentPage"
-                SelectedChanged="@((int page) => { currentPage = page; InvokeAsync(StateHasChanged); })"
-                ShowFirstButton="true"
-                ShowLastButton="true"
-                Class="mt-4 mb-10" />
-        </div>
+                            @if (TotalItems > 0)
+                {
+                    <div class="d-flex flex-column align-center mt-3">
+                        <MudPagination 
+                            Count="@TotalPages"
+                            Selected="@currentPage"
+                            SelectedChanged="@((int page) => { currentPage = page; InvokeAsync(StateHasChanged); })"
+                            ShowFirstButton="true"
+                            ShowLastButton="true"
+                            Class="mt-4 mb-10" />
+                    </div>
+                }
+            </MudItem>
+        </MudGrid>
     }
 
 </MudContainer>
