@@ -35,6 +35,22 @@ public partial class LaunchPhotos : ComponentBase{
         }
     }
 
+    private void ClearSearch(){
+        SearchText = string.Empty;
+        currentPage = 1;
+    }
+
+    private void OpenImageDialog(LaunchPhoto photo){
+        selectedPhoto = photo;
+        imageDialogOpen = true;
+    }
+
+    private void CloseImageDialog(){
+        imageDialogOpen = false;
+        selectedPhoto = null;
+        StateHasChanged();
+    }
+
     protected override async Task OnInitializedAsync(){
         loading = true;
 
@@ -67,21 +83,5 @@ public partial class LaunchPhotos : ComponentBase{
 
             return query.OrderByDescending(p => p.LaunchDate ?? DateTime.MinValue).ToList();
         }
-    }
-    
-    private void ClearSearch(){
-        SearchText = string.Empty;
-        currentPage = 1;
-    }
-
-    private void OpenImageDialog(LaunchPhoto photo){
-        selectedPhoto = photo;
-        imageDialogOpen = true;
-    }
-
-    private void CloseImageDialog(){
-        imageDialogOpen = false;
-        selectedPhoto = null;
-        StateHasChanged();
     }
 }

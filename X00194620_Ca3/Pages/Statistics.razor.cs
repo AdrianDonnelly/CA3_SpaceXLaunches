@@ -36,6 +36,11 @@ public partial class Statistics : ComponentBase{
         YAxisLines = true,
         XAxisLines = false
     };
+    protected override async Task OnInitializedAsync(){
+        loading = true;
+        launches = await SpaceX.GetLaunchesAsync();
+        loading = false;
+    }
 
     private List<ChartSeries> LaunchesPerYearSeries{
         get {
@@ -72,9 +77,4 @@ public partial class Statistics : ComponentBase{
         }
     }
     
-    protected override async Task OnInitializedAsync(){
-        loading = true;
-        launches = await SpaceX.GetLaunchesAsync();
-        loading = false;
-    }
 }
