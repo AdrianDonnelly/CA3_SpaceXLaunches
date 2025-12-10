@@ -12,8 +12,4 @@
         <PackageReference Include="MudBlazor" Version="8.15.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Content Include=".github\workflows\deploy.yaml" />
-    </ItemGroup>
-
 </Project>
