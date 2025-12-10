@@ -25,10 +25,6 @@ jobs:
       - name: Publish project
         run: dotnet publish ./X00194620_Ca3/X00194620_Ca3.csproj -c Release -o release
 
-      - name: Change base-href
-        run: |
-          sed -i 's|<base href="/" />|<base href="/${{ github.event.repository.name }}/" />|' release/wwwroot/index.html
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
