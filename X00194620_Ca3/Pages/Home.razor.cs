@@ -132,7 +132,7 @@ public partial class Home : ComponentBase{
     }
 
     private void OpenLaunch(string id){
-        Nav.NavigateTo($"launch/{id}");
+        Nav.NavigateTo($"./launch/{id}");
     }
 
     private Color StatusColor(bool? success) =>
