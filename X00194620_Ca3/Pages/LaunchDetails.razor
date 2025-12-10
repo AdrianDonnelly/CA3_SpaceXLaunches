@@ -125,7 +125,7 @@
                     <MudPaper ata-test-id="launch-card" Class="pa-4">
                         <MudText Typo="Typo.h6" Class="mb-3">Launch Photos</MudText>
                         <MudGrid Spacing="2">
-                            @foreach (var imageUrl in launch.Links.Flickr.Original.Take(6)){
+                            @foreach (var imageUrl in launch.Links.Flickr.Original.Take(10)){
                                 <MudItem xs="12" sm="6" md="4">
                                     <MudImage Src="@imageUrl"
                                               Alt="Launch photo"
@@ -136,11 +136,6 @@
                                 </MudItem>
                             }
                         </MudGrid>
-                        @if (launch.Links.Flickr.Original.Count > 6){
-                            <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mt-2">
-                                Showing 6 of @launch.Links.Flickr.Original.Count images
-                            </MudText>
-                        }
                     </MudPaper>
                 }
                 else{
