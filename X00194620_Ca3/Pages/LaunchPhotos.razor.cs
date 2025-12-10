@@ -11,11 +11,6 @@ public class LaunchPhoto{
     private SortOrder sortOrder = SortOrder.Descending;
 }
 
-public enum PhotoSortOrder{
-    Newest,
-    Oldest
-}
-
 public partial class LaunchPhotos : ComponentBase{
     [Inject] private SpaceXService SpaceX{ get; set; } = default!;
 
@@ -58,6 +53,13 @@ public partial class LaunchPhotos : ComponentBase{
         selectedPhoto = null;
         StateHasChanged();
     }
+    private void SetSortOrder(SortOrder order){
+        if (sortOrder == order) return;
+        sortOrder = order;
+        currentPage = 1;
+        StateHasChanged();
+    }
+
 
     protected override async Task OnInitializedAsync(){
         loading = true;
@@ -80,12 +82,6 @@ public partial class LaunchPhotos : ComponentBase{
         loading = false;
     }
 
-    private void SetSortOrder(SortOrder order){
-        if (sortOrder == order) return;
-        sortOrder = order;
-        currentPage = 1;
-        StateHasChanged();
-    }
 
     private List<LaunchPhoto> FilteredPhotos{
         get {

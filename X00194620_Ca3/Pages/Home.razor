@@ -121,7 +121,8 @@
             <MudItem xs="12" md="9">
                 <MudList T="object" Dense="true">
                     @foreach (var launch in PagedLaunches){
-                        <MudPaper Class="d-flex align-center mb-2 p-3"
+                        <MudPaper data-test-id="launch-card"
+                                  Class="d-flex align-center mb-2 p-3"
                                   Style="cursor:pointer"
                                   Elevation="1"
                                   @onclick="() => OpenLaunch(launch.Id)">
