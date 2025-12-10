@@ -42,10 +42,10 @@ public class E2E_LaunchNavigationTests{
     }
 
     [Test]
-    public async Task TestDetailsLink(){
+    public async Task TestNavLinkToDetails(){
         var page = await _browser.NewPageAsync();
         await page.GotoAsync(BaseUrl);
-        await page.WaitForSelectorAsync("[data-test-id='launch-card']", new(){ Timeout = 60000 });
+        await page.WaitForSelectorAsync("[data-test-id='launch-card']", new(){ Timeout = 60000 });  
         var drawerOverlay = await page.QuerySelectorAsync(".mud-overlay-scrim");
         if (drawerOverlay != null && await drawerOverlay.IsVisibleAsync()){
             await page.ClickAsync(".mud-overlay-scrim");
