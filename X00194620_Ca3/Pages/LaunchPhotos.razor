@@ -74,7 +74,7 @@
                             <MudButton Variant="Variant.Text"
                                        Color="Color.Primary"
                                        Size="Size.Small"
-                                       Href="@($"/CA3_SpaceXLaunches/launch/{photo.LaunchId}")">
+                                       Href="@($"./launch/{photo.LaunchId}")">
                                 View Launch
                             </MudButton>
                         </MudCardActions>
@@ -119,7 +119,7 @@
             </div>
 
             <div class="d-flex justify-end mt-4" style="gap: 8px;">
-                <MudButton Color="Color.Primary" Variant="Variant.Filled" Href="@($"/launch/{selectedPhoto.LaunchId}")">
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" Href="@($"./launch/{selectedPhoto.LaunchId}")">
                     View Launch Details
                 </MudButton>
                 <MudButton Variant="Variant.Outlined" OnClick="@CloseImageDialog">Close</MudButton>
