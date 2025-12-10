@@ -37,4 +37,32 @@ public class E2E_LaunchNavigationTests
 
         Assert.IsTrue(await page.IsVisibleAsync("text=SpaceX Launch Timeline"));
     }
+
+    [Test]
+    public async Task LaunchCards_Should_Render()
+    {
+        var page = await _browser.NewPageAsync();
+        await page.GotoAsync(BaseUrl);
+
+        await page.WaitForSelectorAsync("[data-test-id='launch-card']", new() { Timeout = 60000 });
+        var cards = await page.QuerySelectorAllAsync("[data-test-id='launch-card']");
+
+        Assert.That(cards.Count, Is.GreaterThan(0));
+    }
+
+    [Test]
+    public async Task Clicking_A_Launch_Navigates_To_Details_Page()
+    {
+        var page = await _browser.NewPageAsync();
+        await page.GotoAsync(BaseUrl);
+
+        await page.WaitForSelectorAsync("[data-test-id='launch-card']", new() { Timeout = 60000 });
+
+        await page.ClickAsync("[data-test-id='launch-card'] >> nth=0");
+
+        await page.WaitForURLAsync(url => url.ToString().Contains("/launch/"),
+            new() { Timeout = 60000 });
+
+        StringAssert.Contains("/launch/", page.Url);
+    }
 }
